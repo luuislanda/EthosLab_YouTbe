@@ -1,0 +1,13 @@
+#ignore all .log files
+*.log
+
+#ignore all .zip files
+*.zip
+
+#ignore all files and any directory called 'temp'
+temp/
+
+#ignore all python cache and other optimisations
+
+__pycache__/
+.DS_Store
