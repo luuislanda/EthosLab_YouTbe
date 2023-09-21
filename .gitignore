@@ -3,7 +3,7 @@
 
 #ignore all .zip files
 *.zip
-
+*.txt
 #ignore all files and any directory called 'temp'
 temp/
 
