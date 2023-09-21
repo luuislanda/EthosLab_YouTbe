@@ -1,9 +1,11 @@
 #ignore all .log files
 *.log
 
-#ignore all .zip files
-*.zip
+#ignore these files!
 *.txt
+*.csv
+*.zip
+
 #ignore all files and any directory called 'temp'
 temp/
 
