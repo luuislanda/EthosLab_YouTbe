@@ -2,6 +2,7 @@ import argparse
 import datetime
 from models import id_extractor, playlist_link_extractor, text_link_extractor, transcript_getter, save_subtitles, zip_maker
 from tqdm import tqdm
+import pandas as pd
 from colorama import Fore, Style
 
 if __name__ == "__main__":
@@ -18,6 +19,8 @@ if __name__ == "__main__":
     file_format = args.format
     session_name = args.name
 
+    error_videoids = []
+
     # Set subtitles folder name
     if session_name:
         subtitles_folder = session_name
@@ -33,9 +36,23 @@ if __name__ == "__main__":
 
     # Get transcripts and save subtitles
     for video in tqdm(ids_videos, desc=f"{Fore.YELLOW}{Style.BRIGHT}Downloading transcripts...{Style.RESET_ALL}", unit="video"):
-        transcript, id = transcript_getter(video)
-        save_subtitles(transcript, id, file_format, subtitles_folder)
+        try:
+            transcript, id = transcript_getter(video)
+            save_subtitles(transcript, id, file_format, subtitles_folder)
+        except Exception as e:
+            print(f"An error ocurred when processing {video}")
+            error_videoids.append(video)
 
     # Create zip file
     zip_maker(subtitles_folder, f"{subtitles_folder}.zip")
 
+
+    # Convert the error_videos list to a DataFrame and save to csv
+    error_videos_df = pd.DataFrame(error_videoids, columns=['video_id'])
+    error_videos_df.to_csv(f'{session_name}_errors.csv', index=False)
+    total_errors = len(error_videoids)
+    percentage = (total_errors / len(ids_videos)) * 100  # Calculate the percentage
+
+    
+    print("Total errors -> " + str(total_errors))  
+    print(str(percentage) + "%")  
